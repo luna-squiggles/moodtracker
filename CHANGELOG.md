@@ -1,5 +1,88 @@
 # Changelog - Mood Tracker  
 
+## [1.2.0] - 2025-02-09  
+
+### 🚀 New Features  
+#### 📅 Year Selection Dropdown  
+- Added a **year selection dropdown** in the header to easily switch between different years (from **2020** to the current year).  
+- Users can now view mood data for previous or future years, depending on availability.  
+
+#### 📜 Historical Data Support  
+- **Historical mood data** is now supported.  
+- Days from previous years are marked as:  
+  - **Historical Day**: A mood was recorded for that day.  
+  - **Historical Empty**: No mood rating was recorded for that day.  
+- Historical days are non-interactive (`pointer-events: none`) to preserve past data integrity.  
+
+#### 🔄 Dynamic Grid Update  
+- The mood grid now dynamically updates when the user changes the selected year from the dropdown.  
+- Mood data is stored and retrieved based on the selected year (e.g., `moodData_2023`).  
+
+---
+
+### 🎨 UI/UX Improvements  
+#### 🖥️ Header Layout  
+- The header now features a **container** that aligns the **title** and **year dropdown** horizontally.  
+- Improved layout and spacing for a cleaner design.  
+
+#### 🏛️ Historical Day Styling  
+- Introduced new CSS classes for historical days:  
+  - `.historical-day` for days with mood data.  
+  - `.historical-empty` for days without mood data.  
+- These days are styled with a **lighter background** for better differentiation.  
+
+#### 🕰️ Future Day Styling  
+- Future days are now visually distinct with a **lighter background** and are **non-interactive**.  
+
+#### 📅 Current Day Highlight  
+- The **current day** is highlighted with a **white background** for easy identification.  
+
+---
+
+### 🛠️ Code Changes  
+#### 🔄 Year Selection Logic  
+- Introduced a **year selection dropdown** with options ranging from **2020** to the current year.  
+- The selected year is tracked in `selectedYear`, and the grid updates accordingly.  
+
+#### 💾 Local Storage Key Update  
+- Mood data is now stored with year-specific keys (e.g., `moodData_2023`) in **localStorage**.  
+- This ensures data is segmented by year.  
+
+#### 🔄 Grid Update Function  
+- Refactored the grid creation logic into a reusable function, **updateGrid()**, called upon page load or year change.  
+
+#### 🏛️ Historical Day Handling  
+- Added logic to correctly apply the **historical-day** or **historical-empty** class based on the year.  
+
+#### 🕰️ Future Day Handling  
+- Improved the logic to identify and style **future days** appropriately.  
+
+---
+
+### 🐛 Bug Fixes  
+#### 🖱️ Popup Positioning  
+- Fixed an issue where the popup was misaligned with the selected day.  
+- The popup now properly aligns with the selected day when clicked.  
+
+#### ⏳ Future Day Interaction  
+- Ensured that future days remain **non-interactive** (`pointer-events: none`) to avoid accidental mood ratings.  
+
+#### 🏛️ Historical Data Consistency  
+- Fixed an issue where historical days were incorrectly styled or could be interacted with.  
+- Historical days are now consistently styled and non-interactive.  
+
+---
+
+## 📌 Summary  
+The **1.2.0 update** brings exciting new features, including:  
+- A **year selection dropdown** to track mood data across multiple years.  
+- **Historical data support** to view past entries with updated styling.  
+- **Dynamic grid updates** when changing years.  
+
+This release makes **Mood Tracker** even more powerful by enabling users to explore their mood history over multiple years while improving the overall user interface. Stay tuned for more! 🚀 
+
+---
+
 ## [1.1.0] - 2025-02-07  
 ### 🚀 New Features  
 #### 🎹 Keyboard Shortcuts for Mood Rating  
