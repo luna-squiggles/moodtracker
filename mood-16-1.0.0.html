@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Playfair+Display:wght@600&display=swap');
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            text-align: center;
+            background-color: #E3C5B4;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, auto);
+            gap: 5px;
+            padding: 20px;
+            justify-content: center;
+        }
+        .month-label {
+            text-align: center;
+            font-weight: 600;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .day {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: 400;
+            color: transparent;
+            position: relative;
+        }
+        .day:hover, .current-day {
+            background-color: rgba(255, 255, 255, 1);
+            color: black;
+        }
+        .past-day {
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+        .future-day {
+            background-color: rgba(255, 255, 255, 0.25);
+            pointer-events: none;
+        }
+        .popup {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: none;
+            gap: 5px;
+            transform: translate(-50%, -120%);
+            z-index: 1000;
+        }
+        .popup button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .popup button:hover {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mood Tracker</h1>
+    <div class="grid" id="moodGrid"></div>
+    <div class="popup" id="popup"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const grid = document.getElementById("moodGrid");
+            const popup = document.getElementById("popup");
+            const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+            const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+            const currentDay = today.getDate();
+            const moodColors = ["#CB7870", "#A67668", "#C1866A", "#DB966C", "#DE9F71", "#E6B77E", "#D3AE7C", "#C0A47A", "#9A9176", "#747E72"];
+            
+            if ((currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0)) daysInMonth[1] = 29;
+            
+            let savedMoods = JSON.parse(localStorage.getItem("moodData")) || {};
+            
+            months.forEach((month, index) => {
+                const column = document.createElement("div");
+                column.classList.add("column");
+                column.innerHTML = `<div class="month-label">${month}</div>`;
+                
+                for (let i = 1; i <= daysInMonth[index]; i++) {
+                    const day = document.createElement("div");
+                    day.classList.add("day");
+                    day.dataset.day = `${index}-${i}`;
+                    
+                    if (savedMoods[day.dataset.day]) {
+                        day.style.backgroundColor = savedMoods[day.dataset.day];
+                    }
+                    
+                    day.addEventListener("mouseenter", () => day.textContent = i);
+                    day.addEventListener("mouseleave", () => {
+                        if (!day.classList.contains("current-day")) day.textContent = "";
+                    });
+                    
+                    if (index < currentMonth || (index === currentMonth && i < currentDay)) {
+                        day.classList.add("past-day");
+                    } else if (index > currentMonth || (index === currentMonth && i > currentDay)) {
+                        day.classList.add("future-day");
+                    }
+                    
+                    if (index === currentMonth && i === currentDay) {
+                        day.classList.add("current-day");
+                        day.textContent = i;
+                    }
+                    
+                    day.addEventListener("click", (e) => {
+                        if (!day.classList.contains("future-day")) {
+                            popup.innerHTML = moodColors.map((color, rating) => {
+                                return `<button style="color: ${color};" data-rating="${rating + 1}">${rating + 1}</button>`;
+                            }).join('');
+                            
+                            const rect = day.getBoundingClientRect();
+                            popup.style.left = `${rect.left + window.scrollX}px`;
+                            popup.style.top = `${rect.top + window.scrollY - 50}px`;
+                            popup.style.display = "flex";
+                            
+                            popup.querySelectorAll("button").forEach(btn => {
+                                btn.addEventListener("click", () => {
+                                    day.style.backgroundColor = btn.style.color;
+                                    savedMoods[day.dataset.day] = btn.style.color;
+                                    localStorage.setItem("moodData", JSON.stringify(savedMoods));
+                                    popup.style.display = "none";
+                                });
+                            });
+                        }
+                    });
+                    column.appendChild(day);
+                }
+                grid.appendChild(column);
+            });
+            document.addEventListener("click", (e) => {
+                if (!popup.contains(e.target) && !e.target.classList.contains("day")) {
+                    popup.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
