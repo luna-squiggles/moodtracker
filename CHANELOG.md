@@ -1,6 +1,6 @@
 # Changelog - Mood Tracker  
 
-## [1.1.0] - YYYY-MM-DD  
+## [1.1.0] - 2025-02-07  
 ### 🚀 New Features  
 #### 🎹 Keyboard Shortcuts for Mood Rating  
 - Users can now rate their mood using **keyboard shortcuts (0-9)**.  
