@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Playfair+Display:wght@600&display=swap');
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            text-align: center;
+            background-color: #E3C5B4;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, auto);
+            column-gap: 5px;
+            row-gap: 5px;
+            padding: 20px;
+            justify-content: center;
+        }
+        .month-label {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .day {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 400;
+            color: rgba(0, 0, 0, 0);
+        }
+        .day:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+        .past-day {
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+        .future-day {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        .current-day {
+            color: rgba(0, 0, 0, 1);
+            background-color: rgba(255, 255, 255, 1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Mood Tracker</h1>
+    <div class="grid" id="moodGrid"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const grid = document.getElementById("moodGrid");
+            const months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+            const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+            const currentDay = today.getDate();
+            
+            const isLeapYear = (year) => {
+                return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            };
+            if (isLeapYear(currentYear)) daysInMonth[1] = 29;
+            
+            months.forEach((month, index) => {
+                const column = document.createElement("div");
+                column.classList.add("column");
+                
+                const label = document.createElement("div");
+                label.classList.add("month-label");
+                label.textContent = month;
+                column.appendChild(label);
+                
+                for (let i = 1; i <= daysInMonth[index]; i++) {
+                    const day = document.createElement("div");
+                    day.classList.add("day");
+                    
+                    if (index < currentMonth || (index === currentMonth && i < currentDay)) {
+                        day.classList.add("past-day");
+                    } else if (index > currentMonth || (index === currentMonth && i > currentDay)) {
+                        day.classList.add("future-day");
+                    }
+                    
+                    if (index === currentMonth && i === currentDay) {
+                        day.classList.add("current-day");
+                        day.textContent = i;
+                    }
+                    
+                    day.addEventListener("click", () => {
+                        const mood = prompt("Rate your mood (1-10):");
+                        if (mood >= 1 && mood <= 10) {
+                            day.style.backgroundColor = `hsla(${(mood - 1) * 36}, 80%, 50%, 0.75)`;
+                        } else {
+                            alert("Please enter a number between 1 and 10.");
+                        }
+                    });
+                    column.appendChild(day);
+                }
+                grid.appendChild(column);
+            });
+        });
+    </script>
+</body>
+</html>

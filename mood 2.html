@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Playfair+Display:wght@600&display=swap');
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            text-align: center;
+            background-color: #E3C5B4;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 5px;
+            padding: 20px;
+        }
+        .day {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 400;
+        }
+        .day:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mood Tracker</h1>
+    <div class="grid" id="moodGrid"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const grid = document.getElementById("moodGrid");
+            
+            for (let i = 1; i <= 365; i++) {
+                const day = document.createElement("div");
+                day.classList.add("day");
+                day.textContent = i;
+                day.addEventListener("click", () => {
+                    const mood = prompt("Rate your mood (1-10):");
+                    if (mood >= 1 && mood <= 10) {
+                        day.style.backgroundColor = `hsl(${(mood - 1) * 36}, 80%, 50%)`;
+                    } else {
+                        alert("Please enter a number between 1 and 10.");
+                    }
+                });
+                grid.appendChild(day);
+            }
+        });
+    </script>
+</body>
+</html>
